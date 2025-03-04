@@ -11,20 +11,24 @@ import matplotlib.pyplot as plt
 e0=8.854 * 10**(-12)
 def getL(M,N,h,r0):
     MN=M*N
-    L=np.ndarray(shape=(MN,MN))
+    l=np.ndarray(shape=(MN,MN))
+    a=(2*np.pi*r0)/M
+    b=h/N
     for m in range(MN):
         for n in range(MN):
             if(m!=n):
+                
                 P=4*np.pi*e0*(((4*(r0/h)**2)*(np.pi*(np.sin(m-n))**2)/M)+(((m-n)/N)**2))**0.5
-                l=((2*np.pi*r0)/(M*N*h))/P
-                L[m][n]=h*l
+                l[m][n]=((2*np.pi*r0)/(M*N*h))/P
             else:
-                temp1=((2*np.pi*r0)/(M*h))*(math.log(((2*np.pi*r0)/h)*((1+((2*np.pi*r0)/h)**2)**0.5)))
+                temp1=a*math.log((b+math.pow(math.pow(a,2)+math.pow(b,2),0.5))/(-b+math.pow(math.pow(a,2)+math.pow(b,2),0.5)))
+                temp2=b*math.log((a+math.pow(math.pow(a,2)+math.pow(b,2),0.5))/(-a+math.pow(math.pow(a,2)+math.pow(b,2),0.5)))
+                l[m][n]=(temp1+temp2)/(4*np.pi*e0)
+                """temp1=((2*np.pi*r0)/(M*h))*(math.log(((2*np.pi*r0)/h)*((1+((2*np.pi*r0)/h)**2)**0.5)))
                 temp2=math.log((h/(2*np.pi*r0))*(1+(h/(2*np.pi*r0))**2)**0.5)/N
-                l=(temp1+temp2)/(2*np.pi*e0)
-                L[m][n]=h*l
-    return L
-
+                l[m][n]=(temp1+temp2)/(2*np.pi*e0)"""
+    return l
+"""
 M=11
 N=9
 h=2
@@ -35,7 +39,7 @@ LI=np.linalg.inv(L)
 sum=0
 for m in range(M*N):
     for n in range(M*N):
-        sum+=((LI[m][n]*h)*((2*np.pi*r0)/(M*N*h)))
+        sum+=((LI[m][n])*((2*np.pi*r0)/(M*N*h)))
         
 Ch=sum
 print(Ch)
@@ -50,7 +54,7 @@ LI=np.linalg.inv(L)
 sum=0
 for m in range(M*N):
     for n in range(M*N):
-        sum+=((LI[m][n]/h)*((2*np.pi*r0)/(M*N*h)))
+        sum+=((LI[m][n])*((2*np.pi*r0)/(M*N*h)))
         
 Ch=sum
 print(Ch)
@@ -58,49 +62,53 @@ print(Ch)
 """
 X=[2,4,12,40,120]
 Y=[]
-L1=getL(11,9,2,1)
-L2=getL(9,11,4,1)
-L3=getL(9,13,12,1)
-L4=getL(10,30,40,1)
-L5=getL(10,40,120,1)
-
-LI1=np.linalg.inv(L1)
-LI2=np.linalg.inv(L2)
-LI3=np.linalg.inv(L3)
-LI4=np.linalg.inv(L4)
-LI5=np.linalg.inv(L5)
+l1=getL(11,9,2,1)
+l2=getL(9,11,4,1)
+l3=getL(9,13,12,1)
+l4=getL(10,30,40,1)
+l5=getL(10,40,120,1)
+L1=l1*2
+L2=l2*4
+L3=l3*12
+L4=l4*40
+L5=l5*120
+li1=np.linalg.inv(l1)
+li2=np.linalg.inv(l2)
+li3=np.linalg.inv(l3)
+li4=np.linalg.inv(l4)
+li5=np.linalg.inv(l5)
 
 sum=0
 for i in range(11*9):
     for j in range(11*9):
-        sum+=(LI1[i][j]/2)*((2*np.pi)/(11*9*2))
-Y.append(sum)
+        sum+=(li1[i][j])*((2*np.pi)/(11*9*2))
+Y.append(sum*10**(12))
 sum=0
 for i in range(11*9):
     for j in range(11*9):
-        sum+=(LI2[i][j]/4)*((2*np.pi)/(11*9*4))
-Y.append(sum)
+        sum+=(li2[i][j])*((2*np.pi)/(9*11*4))
+Y.append(sum*10**(12))
 sum=0
 for i in range(9*13):
     for j in range(9*13):
-        sum+=(LI3[i][j]/12)*((2*np.pi)/(9*13*12))
-Y.append(sum)
+        sum+=(li3[i][j])*((2*np.pi)/(9*13*12))
+Y.append(sum*10**(12))
 sum=0
 for i in range(10*30):
     for j in range(10*30):
-        sum+=(LI4[i][j]/40)*((2*np.pi)/(10*30*40))
-Y.append(sum)
+        sum+=(li4[i][j])*((2*np.pi)/(10*30*40))
+Y.append(sum*10**(12))
 sum=0
 for i in range(10*40):
     for j in range(10*40):
-        sum+=(LI5[i][j]/120)*((2*np.pi)/(10*40*120))
-Y.append(sum)
+        sum+=(li5[i][j])*((2*np.pi)/(10*40*120))
+Y.append(sum*10**(12))
 
 print(Y)
 plt.plot(X,Y)
 plt.scatter(X,Y)
 
-
+"""
 M=int(input("Enter the value of M\n"))
 N=int(input("Enter the value of N\n"))
 h=int(input("Enter the height of the cylinder\n"))
@@ -132,7 +140,6 @@ print(Csh)
 print("Considering Top and bottom plate")
 print("Capcitance= ")
 print(Q+(16*e0*r0))"""
-
 
 
 
